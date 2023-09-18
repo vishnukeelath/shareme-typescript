@@ -143,7 +143,9 @@ const AdminImageList = ({ user }: Props) => {
                     <td className="w-1/5 p-2.5 text-center text-gray-500">
                       {pin.postedBy.displayName}
                     </td>
-                    <td className="w-1/5 p-2.5 text-center text-gray-500"></td>
+                    <td className="w-1/5 p-2.5 text-center text-gray-500">
+                      {pin.status}
+                    </td>
                     <td className="w-1/5 p-2.5 text-center text-gray-500"></td>
                   </tr>
                 ))}

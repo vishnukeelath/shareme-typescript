@@ -74,6 +74,8 @@ const CreatePin = ({ user }: Props) => {
         destination: destination,
         image: imageAsset,
         postedBy: user,
+        status: "Pending",
+        isApproved: false,
       };
       const docRef = await addDoc(collection(firestore, "pins"), pinDoc).catch(
         (error) => {

@@ -18,6 +18,8 @@ export interface Pins {
   image: string;
   title: string;
   postedBy: User;
+  isApproved: Boolean;
+  status: string;
 }
 
 export interface Comment {
