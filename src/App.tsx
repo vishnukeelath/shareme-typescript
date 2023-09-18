@@ -19,7 +19,7 @@ function App() {
     <Routes>
       <Route path="/*" element={<Home />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/admin-panel" element={<AdminPanel />} />
+      <Route path="/admin-panel/*" element={<AdminPanel />} />
     </Routes>
   );
 }

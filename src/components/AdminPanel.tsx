@@ -7,6 +7,8 @@ import logo from "@/assets/logo.png";
 import { HiMenu } from "react-icons/hi";
 import { RiCloseCircleFill } from "react-icons/ri";
 import UserProfile from "./UserProfile";
+import AdminImageList from "./AdminImageList";
+import Navbar from "./Navbar";
 
 type Props = {};
 
@@ -15,9 +17,19 @@ const AdminPanel = (props: Props) => {
   const [toggleSidebar, setToggleSidebar] = useState<Boolean>(false);
   const [user, setUser] = useState<User>();
   const scrollRef = useRef<HTMLInputElement>(null);
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   const userInfo: User = fetchUser();
   console.log("userInfo - ", userInfo);
+
+  useEffect(() => {
+    setUser({
+      displayName: userInfo.displayName,
+      email: userInfo.email,
+      photoURL: userInfo.photoURL,
+      uid: userInfo.uid,
+    });
+  }, []);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -42,7 +54,12 @@ const AdminPanel = (props: Props) => {
           <Link to="/">
             <img src={logo} alt="logo" className="w-28" />
           </Link>
-          <Link to={`user-profile/${user?.uid}`}>
+          <Link
+            to={`/user-profile/${user?.uid}`}
+            // onClick={() =>
+            //   navigate(`/user-profile/${user?.uid}`, { replace: true })
+            // }
+          >
             <img
               src={user?.photoURL}
               alt="logo"
@@ -67,11 +84,22 @@ const AdminPanel = (props: Props) => {
         )}
       </div>
       <div
-        className="pb-2 flex-1 h-screen overflow-y-scroll scrollbar-hide xl:scrollbar-default"
+        className="pb-2 flex-1 h-auto overflow-y-scroll scrollbar-hide xl:scrollbar-default relative"
         ref={scrollRef}
       >
+        <div className="bg-gray-50 relative">
+          <Navbar
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            user={user}
+          />
+        </div>
         <Routes>
-          <Route path="/user-profile/:userId" element={<UserProfile />} />
+          <Route
+            path="/list/pins"
+            element={<AdminImageList user={user && user} />}
+          />
+          {/* <Route path="/user-profile/:userId" element={<UserProfile />} /> */}
         </Routes>
       </div>
     </div>

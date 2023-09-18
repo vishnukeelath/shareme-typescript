@@ -33,7 +33,7 @@ const AdminSidebar = ({ user, setToggleSidebar }: Props) => {
           <img src={logo} alt="logo" className="w-full" />
         </Link>
         {/* Sidebar Items */}
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 w-[190px]">
           <NavLink
             to="/"
             className={({ isActive }) =>
@@ -46,7 +46,7 @@ const AdminSidebar = ({ user, setToggleSidebar }: Props) => {
           </NavLink>
           {adminNavigationConfig.map((page) => (
             <NavLink
-              to={`/admin-panel/${page.name}`}
+              to={`/admin-panel/list/${page.name}`}
               className={({ isActive }) =>
                 isActive ? isActiveStyle : isNotActiveStyle
               }

@@ -68,6 +68,6 @@ export const categories = [
 
 export const adminNavigationConfig = [
   {
-    name: "Photos",
+    name: "pins",
   },
 ];
