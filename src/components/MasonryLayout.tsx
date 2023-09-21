@@ -13,12 +13,13 @@ const breakpointObj = {
 
 type Props = {
   pins: Pins[];
+  fetchPins: () => void;
 };
 
-const MasonryLayout = ({ pins }: Props) => {
+const MasonryLayout = ({ pins, fetchPins }: Props) => {
   return (
     <Masonry className="flex animate-slide-fwd" breakpointCols={breakpointObj}>
-      {pins?.map((pin) => <Pin key={pin.id} pin={pin} />)}
+      {pins?.map((pin) => <Pin key={pin.id} pin={pin} fetchPins={fetchPins} />)}
     </Masonry>
   );
 };

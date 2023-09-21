@@ -5,9 +5,13 @@ import { Link, useNavigate } from "react-router-dom";
 
 type Props = {
   pin: Pins;
+  fetchPins: () => void;
 };
 
-const Pin = ({ pin: { image, id, postedBy, destination } }: Props) => {
+const Pin = ({
+  pin: { image, id, postedBy, destination },
+  fetchPins,
+}: Props) => {
   const [postHovered, setPostHovered] = useState<boolean>(false);
 
   const navigate = useNavigate();

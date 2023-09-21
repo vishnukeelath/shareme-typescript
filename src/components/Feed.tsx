@@ -14,45 +14,45 @@ const Feed = (props: Props) => {
   const [isPins, setIsPins] = useState<boolean>(false);
   const { categoryId } = useParams();
 
-  useEffect(() => {
-    const fetchPins = async () => {
-      setLoading(true);
+  const fetchPins = async () => {
+    setLoading(true);
 
-      if (categoryId) {
-        //We are using Web Modular API in Firestore docs to implement API
-        const pins = await getDocs(
-          query(
-            collection(firestore, "pins"),
-            where("category", "==", categoryId)
-          )
-        );
-        console.log("pins data-", pins.docs);
-        const pinsData: Pins[] = pins.docs.map((doc) => ({
-          ...doc.data(),
-          id: doc.id,
-        })) as Pins[];
-        console.log("pins odject-", pinsData);
-        if (pinsData.length > 0) {
-          setPins(pinsData);
-          setIsPins(pinsData.length > 0);
-        }
-        setLoading(false);
-      } else {
-        const pins = await getDocs(query(collection(firestore, "pins")));
-        console.log("pins data-", pins.docs);
-        const pinsData: Pins[] = pins.docs.map((doc) => ({
-          ...doc.data(),
-          id: doc.id,
-        })) as Pins[];
-        console.log("pins odject-", pinsData);
-        if (pinsData.length > 0) {
-          setPins(pinsData);
-          setIsPins(pinsData.length > 0);
-        }
-        setLoading(false);
+    if (categoryId) {
+      //We are using Web Modular API in Firestore docs to implement API
+      const pins = await getDocs(
+        query(
+          collection(firestore, "pins"),
+          where("category", "==", categoryId)
+        )
+      );
+      console.log("pins data-", pins.docs);
+      const pinsData: Pins[] = pins.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      })) as Pins[];
+      console.log("pins odject-", pinsData);
+      if (pinsData.length > 0) {
+        setPins(pinsData);
+        setIsPins(pinsData.length > 0);
       }
-    };
+      setLoading(false);
+    } else {
+      const pins = await getDocs(query(collection(firestore, "pins")));
+      console.log("pins data-", pins.docs);
+      const pinsData: Pins[] = pins.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      })) as Pins[];
+      console.log("pins odject-", pinsData);
+      if (pinsData.length > 0) {
+        setPins(pinsData);
+        setIsPins(pinsData.length > 0);
+      }
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchPins();
   }, [categoryId]);
 
@@ -61,7 +61,9 @@ const Feed = (props: Props) => {
 
   if (!isPins) return <h2>No Pins available</h2>;
 
-  return <div>{isPins && <MasonryLayout pins={pins} />}</div>;
+  return (
+    <div>{isPins && <MasonryLayout pins={pins} fetchPins={fetchPins} />}</div>
+  );
 };
 
 export default Feed;
