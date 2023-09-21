@@ -9,6 +9,7 @@ import { RiCloseCircleFill } from "react-icons/ri";
 import UserProfile from "./UserProfile";
 import AdminImageList from "./AdminImageList";
 import Navbar from "./Navbar";
+import AdminNavbar from "./AdminNavbar";
 
 type Props = {};
 
@@ -87,12 +88,14 @@ const AdminPanel = (props: Props) => {
         className="pb-2 flex-1 h-auto overflow-y-scroll scrollbar-hide xl:scrollbar-default relative"
         ref={scrollRef}
       >
-        <div className="bg-gray-50 relative">
-          <Navbar
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            user={user}
-          />
+        <div className="px-2 md:px-5 relative">
+          <div className="bg-gray-50 relative">
+            <AdminNavbar
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+              user={user}
+            />
+          </div>
         </div>
         <Routes>
           <Route
