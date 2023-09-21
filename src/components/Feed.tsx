@@ -1,6 +1,13 @@
 import { firestore } from "@/config/firebaseconfig";
 import { Pins } from "@/shared/types";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  limit,
+  query,
+  startAfter,
+  where,
+} from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import MasonryLayout from "./MasonryLayout";
@@ -13,18 +20,36 @@ const Feed = (props: Props) => {
   const [pins, setPins] = useState<Pins[]>([]);
   const [isPins, setIsPins] = useState<boolean>(false);
   const { categoryId } = useParams();
+  const [lastVisibleData, setlastVisibleData] = useState<Object>();
+  const [firstVisibleData, setFirstVisibleData] = useState<Object>();
 
   const fetchPins = async () => {
     setLoading(true);
 
     if (categoryId) {
-      //We are using Web Modular API in Firestore docs to implement API
-      const pins = await getDocs(
-        query(
-          collection(firestore, "pins"),
-          where("category", "==", categoryId)
-        )
-      );
+      //Get images by scroll
+      const collectionRef = lastVisibleData
+        ? query(
+            collection(firestore, "pins"),
+            limit(13),
+            startAfter(lastVisibleData),
+            where("category", "==", categoryId)
+          )
+        : query(
+            collection(firestore, "pins"),
+            limit(13),
+            where("category", "==", categoryId)
+          );
+
+      const pins = await getDocs(collectionRef);
+
+      //We are using Web Modular API in Firestore docs to implement API --- without loading of images on scroll
+      // const pins = await getDocs(
+      //   query(
+      //     collection(firestore, "pins"),
+      //     where("category", "==", categoryId)
+      //   )
+      // );
       console.log("pins data-", pins.docs);
       const pinsData: Pins[] = pins.docs.map((doc) => ({
         ...doc.data(),
@@ -32,12 +57,23 @@ const Feed = (props: Props) => {
       })) as Pins[];
       console.log("pins odject-", pinsData);
       if (pinsData.length > 0) {
-        setPins(pinsData);
+        setPins((presentPins) => [...presentPins, ...pinsData]);
         setIsPins(pinsData.length > 0);
       }
       setLoading(false);
     } else {
-      const pins = await getDocs(query(collection(firestore, "pins")));
+      //Get images by scroll
+      const collectionRef = lastVisibleData
+        ? query(
+            collection(firestore, "pins"),
+            limit(13),
+            startAfter(lastVisibleData)
+          )
+        : query(collection(firestore, "pins"), limit(13));
+
+      const pins = await getDocs(collectionRef);
+
+      // const pins = await getDocs(query(collection(firestore, "pins"))); //without loading of images on scroll
       console.log("pins data-", pins.docs);
       const pinsData: Pins[] = pins.docs.map((doc) => ({
         ...doc.data(),
