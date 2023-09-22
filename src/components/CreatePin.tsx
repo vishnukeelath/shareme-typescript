@@ -25,6 +25,102 @@ const CreatePin = ({ user }: Props) => {
   const [wrongImageType, setWrongImageType] = useState<boolean>(false);
   const [category, setCategory] = useState<string>("");
   const [imageAsset, setImageAsset] = useState<string>("");
+  const [compressedImgUrl, setCompressedImgUrl] = useState<string>("");
+
+  // const compressAndResizeImage = async (
+  //   file: File,
+  //   maxWidth: number,
+  //   maxHeight: number
+  // ): Promise<Blob> => {
+  //   return new Promise((resolve) => {
+  //     const reader = new FileReader();
+  //     reader.onload = (event) => {
+  //       const img = new Image();
+  //       img.src = event.target?.result as string;
+  //       img.onload = () => {
+  //         const canvas = document.createElement("canvas");
+  //         const ctx = canvas.getContext("2d");
+
+  //         let targetWidth = img.width;
+  //         let targetHeight = img.height;
+
+  //         // Resize the image while maintaining its aspect ratio
+  //         if (img.width > maxWidth) {
+  //           targetWidth = maxWidth;
+  //           targetHeight = (img.height * maxWidth) / img.width;
+  //         }
+
+  //         if (targetHeight > maxHeight) {
+  //           targetHeight = maxHeight;
+  //           targetWidth = (img.width * maxHeight) / img.height;
+  //         }
+
+  //         canvas.width = targetWidth;
+  //         canvas.height = targetHeight;
+
+  //         ctx?.drawImage(img, 0, 0, targetWidth, targetHeight);
+
+  //         canvas.toBlob(
+  //           (blob) => {
+  //             resolve(blob as Blob);
+  //           },
+  //           file.type,
+  //           0.7
+  //         ); // Adjust compression quality as needed (0.7 means 70% quality)
+  //       };
+  //     };
+  //     reader.readAsDataURL(file);
+  //   });
+  // };
+
+  const compressAndResizeImage = async (
+    file: File,
+    maxWidth: number,
+    maxHeight: number
+  ): Promise<Blob> => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target?.result as string;
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+
+          let targetWidth = img.width;
+          let targetHeight = img.height;
+
+          // Calculate the aspect ratio
+          const aspectRatio = img.width / img.height;
+
+          // Resize the image while maintaining its aspect ratio
+          if (img.width > maxWidth) {
+            targetWidth = maxWidth;
+            targetHeight = maxWidth / aspectRatio;
+          }
+
+          if (targetHeight > maxHeight) {
+            targetHeight = maxHeight;
+            targetWidth = maxHeight * aspectRatio;
+          }
+
+          canvas.width = targetWidth;
+          canvas.height = targetHeight;
+
+          ctx?.drawImage(img, 0, 0, targetWidth, targetHeight);
+
+          canvas.toBlob(
+            (blob) => {
+              resolve(blob as Blob);
+            },
+            file.type,
+            0.7
+          ); // Adjust compression quality as needed (0.7 means 70% quality)
+        };
+      };
+      reader.readAsDataURL(file);
+    });
+  };
 
   const uploadImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) {
@@ -45,6 +141,13 @@ const CreatePin = ({ user }: Props) => {
     ) {
       setWrongImageType(false);
       setLoading(true);
+
+      const compressedImgBlob = await compressAndResizeImage(
+        e.target.files[0],
+        300,
+        500
+      );
+      console.log("compressedImg", compressedImgBlob);
 
       const storageRef = ref(storage, `/files/images/${v4()}${name}`);
       const uploadTask = await uploadBytesResumable(

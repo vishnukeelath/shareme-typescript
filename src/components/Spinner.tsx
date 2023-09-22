@@ -2,10 +2,10 @@ import React from "react";
 import { ColorRing, Circles } from "react-loader-spinner";
 
 type Props = {
-  message: string | undefined;
+  message?: string | undefined;
 };
 
-const Spinner = ({ message }: Props) => {
+const Spinner = ({ message = "" }: Props) => {
   return (
     <div className="flex flex-col justify-center items-center w-full h-full">
       {/* <Circles color="#00BFFF" height={50} width={200} /> */}
