@@ -149,6 +149,25 @@ const CreatePin = ({ user }: Props) => {
       );
       console.log("compressedImg", compressedImgBlob);
 
+      const compressedStorageRef = ref(
+        storage,
+        `/files/images/${v4()}${name}-compressed`
+      );
+      const comUploadTask = await uploadBytesResumable(
+        compressedStorageRef,
+        compressedImgBlob
+      );
+      console.log("uploadTask", comUploadTask);
+      const compressedPhotoUrl = await getDownloadURL(comUploadTask.ref).catch(
+        (error) => {
+          console.log("Image url error", error);
+        }
+      );
+      console.log("compressedPhotoUrl", compressedPhotoUrl);
+      if (compressedPhotoUrl) {
+        setCompressedImgUrl(compressedPhotoUrl);
+      }
+
       const storageRef = ref(storage, `/files/images/${v4()}${name}`);
       const uploadTask = await uploadBytesResumable(
         storageRef,
@@ -179,6 +198,7 @@ const CreatePin = ({ user }: Props) => {
         postedBy: user,
         status: "Pending",
         isApproved: false,
+        thumbnailImage: compressedImgUrl,
       };
       const docRef = await addDoc(collection(firestore, "pins"), pinDoc).catch(
         (error) => {
