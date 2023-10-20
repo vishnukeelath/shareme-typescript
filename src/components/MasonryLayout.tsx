@@ -1,8 +1,10 @@
 import { Pins } from "@/shared/types";
 import Masonry from "react-masonry-css";
 import Pin from "./Pin";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import Spinner from "./Spinner";
+import { DocumentSnapshot } from "firebase/firestore";
+import useIntersectionObserver from "@/shared/useIntersectionObserver";
 
 const breakpointObj = {
   default: 4,
@@ -17,39 +19,15 @@ type Props = {
   pins: Pins[];
   fetchPins: () => void;
   loading: Boolean;
+  isLastPage?: Boolean;
 };
 
-const MasonryLayout = ({ pins, fetchPins, loading }: Props) => {
-  // Create a ref for the last image element to observe
-  const lastImageRef = useRef<HTMLDivElement>(null);
+const MasonryLayout = ({ pins, fetchPins, loading, isLastPage }: Props) => {
+  console.log("run MasonryLayout");
 
-  const observerCallback: IntersectionObserverCallback = (entries) => {
-    const [entry] = entries;
-    console.log("entry.isIntersecting", entry.isIntersecting);
-    if (entry.isIntersecting) {
-      console.log("entered entry.isIntersecting");
-      fetchPins();
-    }
-  };
-
-  useEffect(() => {
-    console.log("entered here 111", lastImageRef);
-    const observer = new window.IntersectionObserver(observerCallback, {
-      threshold: 0.5,
-    });
-
-    if (lastImageRef.current) {
-      console.log("entered here 222", lastImageRef.current);
-      observer.observe(lastImageRef.current);
-    }
-
-    return () => {
-      if (lastImageRef.current) {
-        console.log("entered here 333", lastImageRef.current);
-        observer.unobserve(lastImageRef.current);
-      }
-    };
-  }, [lastImageRef]);
+  const lastRef = useIntersectionObserver<HTMLDivElement>(() => {
+    void fetchPins();
+  }, [!isLastPage, !loading]);
 
   return (
     <>
@@ -57,11 +35,13 @@ const MasonryLayout = ({ pins, fetchPins, loading }: Props) => {
         className="flex animate-slide-fwd"
         breakpointCols={breakpointObj}
       >
-        {pins?.map((pin) => <Pin key={pin.id} pin={pin} />)}
+        {pins?.map((pin, index) => (
+          // This is the last image, it will trigger fetching more images
+          <div key={pin.id} ref={pins.length - 1 === index ? lastRef : null}>
+            <Pin key={pin.id} pin={pin} />
+          </div>
+        ))}
       </Masonry>
-      <div ref={lastImageRef}>
-        {/* This is the last image, it will trigger fetching more images */}
-      </div>
       {loading && <Spinner />}
     </>
   );

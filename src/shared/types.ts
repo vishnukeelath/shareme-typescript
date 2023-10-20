@@ -20,6 +20,7 @@ export interface Pins {
   postedBy: User;
   isApproved: Boolean;
   status: string;
+  thumbnailImage: string;
 }
 
 export interface Comment {

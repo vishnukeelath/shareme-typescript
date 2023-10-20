@@ -86,7 +86,18 @@ const UserProfile = (props: Props) => {
             <h1 className="text-3xl text-center mt-3">
               {currentUserData?.displayName}
             </h1>
-            <div className="absolute top-0 z-1 right-0 p-2">
+            <div className="absolute top-0 z-1 right-0 p-2 flex flex-row gap-2 items-center justify-center">
+              <button
+                type="button"
+                onClick={() => {
+                  navigate("/admin-panel");
+                }}
+                className={
+                  "flex justify-center gap-1.5 bg-red-500 hover:bg-red-800 text-white font-bold py-1.5 px-3 rounded-full w-32 outline-none"
+                }
+              >
+                Admin Panel
+              </button>
               <button
                 type="button"
                 className="bg-white p-2 rounded-full cursor-pointer outline-none shadow-md"
@@ -112,7 +123,11 @@ const UserProfile = (props: Props) => {
           )}
           {!loading && isPins && (
             <div className="px-2">
-              <MasonryLayout2 pins={pins} />
+              <MasonryLayout2
+                pins={pins}
+                fetchPins={pinsData}
+                loading={loading}
+              />
             </div>
           )}
           {!loading && !isPins && (

@@ -9,6 +9,7 @@ import { firestore, storage } from "@/config/firebaseconfig";
 import { v4 } from "uuid";
 import { categories } from "@/utils/data";
 import { collection, addDoc } from "firebase/firestore";
+import { TailSpin } from "react-loader-spinner";
 
 type Props = {
   user: User | undefined;
@@ -21,11 +22,17 @@ const CreatePin = ({ user }: Props) => {
   const [about, setAbout] = useState<string>("");
   const [destination, setDestination] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+  const [submitting, setSubmitting] = useState<boolean>(false);
   const [fields, setFields] = useState<boolean>(false);
   const [wrongImageType, setWrongImageType] = useState<boolean>(false);
   const [category, setCategory] = useState<string>("");
   const [imageAsset, setImageAsset] = useState<string>("");
   const [compressedImgUrl, setCompressedImgUrl] = useState<string>("");
+
+  const currentDate = new Date();
+  const timestamp = currentDate.getTime();
+  console.log("currentDate", currentDate);
+  console.log("timestamp", timestamp);
 
   // const compressAndResizeImage = async (
   //   file: File,
@@ -188,6 +195,7 @@ const CreatePin = ({ user }: Props) => {
   };
 
   const savePin = async () => {
+    setSubmitting(true);
     if (title && about && destination && imageAsset && category) {
       const pinDoc = {
         title: title,
@@ -199,6 +207,7 @@ const CreatePin = ({ user }: Props) => {
         status: "Pending",
         isApproved: false,
         thumbnailImage: compressedImgUrl,
+        createdAt: timestamp,
       };
       const docRef = await addDoc(collection(firestore, "pins"), pinDoc).catch(
         (error) => {
@@ -209,6 +218,7 @@ const CreatePin = ({ user }: Props) => {
       console.log("cloud upload", docRef);
       if (docRef) {
         navigate("/");
+        setSubmitting(false);
       }
     }
   };
@@ -320,8 +330,25 @@ const CreatePin = ({ user }: Props) => {
               <button
                 type="button"
                 onClick={savePin}
-                className="bg-red-500 text-white font-bold p-2 rounded-full w-28 outline-none"
+                disabled={submitting}
+                className={
+                  submitting
+                    ? "flex justify-center gap-1.5 bg-red-500 text-white font-bold py-2 px-3 rounded-full outline-none opacity-70"
+                    : "flex justify-center gap-1.5 bg-red-500 hover:bg-red-800 text-white font-bold py-2 px-3 rounded-full w-28 outline-none"
+                }
               >
+                {submitting && (
+                  <TailSpin
+                    height="20"
+                    width="20"
+                    color="#fff"
+                    ariaLabel="tail-spin-loading"
+                    radius=""
+                    wrapperStyle={{}}
+                    wrapperClass=""
+                    visible={true}
+                  />
+                )}
                 Save Pin
               </button>
             </div>

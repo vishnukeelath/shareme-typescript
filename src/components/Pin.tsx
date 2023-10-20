@@ -13,7 +13,9 @@ type Props = {
   pin: Pins;
 };
 
-const Pin = ({ pin: { image, id, postedBy, destination } }: Props) => {
+const Pin = ({
+  pin: { image, thumbnailImage, id, postedBy, destination },
+}: Props) => {
   const [postHovered, setPostHovered] = useState<boolean>(false);
 
   const navigate = useNavigate();
@@ -69,7 +71,7 @@ const Pin = ({ pin: { image, id, postedBy, destination } }: Props) => {
           alt="user-post"
           // loading="lazy"
           src={pinBg}
-          data-src={image}
+          data-src={thumbnailImage ? thumbnailImage : image}
         />
       </div>
       <Link

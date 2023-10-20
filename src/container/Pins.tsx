@@ -1,5 +1,7 @@
+import CategoryFeed from "@/components/CategoryFeed";
 import CreatePin from "@/components/CreatePin";
 import Feed from "@/components/Feed";
+import HomeFeed from "@/components/HomeFeed";
 import Navbar from "@/components/Navbar";
 import PinDetail from "@/components/PinDetail";
 import Search from "@/components/Search";
@@ -25,8 +27,13 @@ const Pins = ({ user }: Props) => {
       </div>
       <div className="h-full">
         <Routes>
-          <Route path="/" element={<Feed />} />
-          <Route path="/category/:categoryId" element={<Feed />} />
+          <Route path="/" element={<HomeFeed />} />
+          <Route
+            path="/category/:categoryId"
+            element={
+              <CategoryFeed pinsInitial={[]} lastVisibleDataInitial={{}} />
+            }
+          />
           <Route
             path="/pin-detail/:pinId"
             element={<PinDetail user={user} />}
