@@ -1,9 +1,14 @@
 import React from "react";
+import SearchFeed from "./SearchFeed";
 
-type Props = {};
+type Props = {
+  searchTerm: string;
+  setSearchTerm: (value: string) => void;
+};
 
-const Search = (props: Props) => {
-  return <div>Search</div>;
+const Search = ({ searchTerm }: Props) => {
+  console.log("searchTerm", searchTerm);
+  return <SearchFeed searchTerm={searchTerm} />;
 };
 
 export default Search;

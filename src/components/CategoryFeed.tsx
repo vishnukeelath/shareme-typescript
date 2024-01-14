@@ -15,6 +15,8 @@ import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import MasonryLayout from "./MasonryLayout";
 import Spinner from "./Spinner";
+import NoPins from "@/shared/NoPins";
+import { STATUS_APPROVED } from "@/shared/constants";
 
 type Props = {
   pinsInitial: Pins[];
@@ -48,6 +50,7 @@ const CategoryFeed = ({ pinsInitial, lastVisibleDataInitial }: Props) => {
         query(
           collection(firestore, "pins"),
           where("category", "==", categoryId),
+          where("status", "==", STATUS_APPROVED),
           orderBy("createdAt", "desc"),
           limit(pageLimit)
         )
@@ -84,6 +87,7 @@ const CategoryFeed = ({ pinsInitial, lastVisibleDataInitial }: Props) => {
           query(
             collection(firestore, "pins"),
             where("category", "==", categoryId),
+            where("status", "==", STATUS_APPROVED),
             orderBy("createdAt", "desc"),
             startAfter(lastVisibleData),
             limit(pageLimit)
@@ -94,6 +98,7 @@ const CategoryFeed = ({ pinsInitial, lastVisibleDataInitial }: Props) => {
           query(
             collection(firestore, "pins"),
             where("category", "==", categoryId),
+            where("status", "==", STATUS_APPROVED),
             orderBy("createdAt", "desc"),
             limit(pageLimit)
           )
@@ -142,7 +147,7 @@ const CategoryFeed = ({ pinsInitial, lastVisibleDataInitial }: Props) => {
   if (loading && pins.length === 0)
     return <Spinner message="We are adding new ideas to your feed!" />;
 
-  if (!isPins) return <h2>No Pins available</h2>;
+  if (!isPins && !loading) return <NoPins />;
 
   return (
     <div>

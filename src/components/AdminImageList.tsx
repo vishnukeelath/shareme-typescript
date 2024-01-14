@@ -264,12 +264,12 @@ const AdminImageList = ({ user }: Props) => {
                       <td className="w-1/5 p-2.5 text-center text-sm text-green-600">
                         {pin.status !== "Approved" && (
                           <div
-                            className="flex flex-row m-auto justify-center px-4 py-2 rounded-3xl gap-0.5 w-fit hover:bg-gray-100"
+                            className="flex flex-row m-auto justify-center px-4 py-2 rounded-3xl gap-0.5 w-fit cursor-pointer hover:bg-gray-100"
                             onClick={() => updatePinData(pin.id)}
                           >
                             <TiTick size={22} />
                             {/* <CiCircleCheck size={21} /> */}
-                            <span className="mt-[2.5px]">Approve</span>
+                            <span className="mt-[2.5px] ">Approve</span>
                           </div>
                         )}
                       </td>
